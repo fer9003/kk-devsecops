@@ -1,6 +1,6 @@
 pipeline {
   agent any
-
+  //trigger pipeline using webhook
   stages {
       stage('Build Artifact') {
             steps {
