@@ -1,6 +1,6 @@
 pipeline {
   agent any
-  //trigger pipeline using webhook..
+  //trigger pipeline using webhook.. plugin
   stages {
       stage('Build Artifact') {
             steps {
