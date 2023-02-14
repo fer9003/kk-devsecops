@@ -66,7 +66,7 @@ pipeline {
         steps {
           withDockerRegistry([credentialsId: "docker-hub", url:""]) {
           sh 'printenv'
-          sh 'docker build -t f90mora/devsecopsdemo1:""$GIT_COMMIT"" .'
+          sh 'sudo docker build -t f90mora/devsecopsdemo1:""$GIT_COMMIT"" .'
           sh 'docker push f90mora/devsecopsdemo1:""$GIT_COMMIT""'
           }
         }
