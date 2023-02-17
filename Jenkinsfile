@@ -43,12 +43,6 @@ pipeline {
         }
       }
 
- /*      stage('Vulnerabilty Scan - Docker') {
-        steps {
-          sh 'mvn dependency-check:check'
-        }
-      } */
-
       stage('Vulnerability Scan - Docker') {
         steps {
           parallel (
@@ -72,6 +66,12 @@ pipeline {
           sh 'sudo docker build -t f90mora/devsecopsdemo1:""$GIT_COMMIT"" .'
           sh 'docker push f90mora/devsecopsdemo1:""$GIT_COMMIT""'
           }
+        }
+      }
+
+      stage('Vulnerability Scan - Kubernetes') {
+        steps {
+          sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
         }
       }
 
