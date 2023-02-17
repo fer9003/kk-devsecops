@@ -31,8 +31,9 @@ pipeline {
           withSonarQubeEnv('SonarQube') {
             sh '''
               mvn clean verify sonar:sonar \
-              -Dsonar.projectKey=numeric-applications \
-              -Dsonar.host.url=http://devsecops-demo-fm.eastus.cloudapp.azure.com:9000
+              -Dsonar.projectKey=numeric-application \
+              -Dsonar.host.url=http://localhost:9000 \
+              -Dsonar.login=sqp_ca35b6298f2d206bd3f35a1081068a688d73c7bd
           '''
           }
           timeout(time:2, unit: 'MINUTES') {
