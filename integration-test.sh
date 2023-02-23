@@ -20,7 +20,7 @@ then
     fi;
 
     if [[ "$http_code" == 200 ]];
-    then;
+    then
         echo "HTTP Status code Test Passed"
     else
         echo "HTTP Status code is not 200"
