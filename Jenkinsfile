@@ -1,3 +1,5 @@
+@Library('slack') _
+
 pipeline {
   agent any
 
@@ -12,18 +14,18 @@ pipeline {
 
   //trigger pipeline using webhook
   stages {
-      stage('Build Artifact') {
+/*       stage('Build Artifact') {
             steps {
               sh "mvn clean package -DskipTests=true"
               archive 'target/*.jar' //so that they can be downloaded later
             }
-        }
+        } */
 
-      stage('Unit Tests - JUnit and Jacoco') {
+/*       stage('Unit Tests - JUnit and Jacoco') {
         steps {
           sh "mvn test"
         } 
-      }
+      } */
 
       stage('Mutation Test - PIT') {
         steps {
@@ -36,7 +38,7 @@ pipeline {
         }
       }
 
-      stage('SonarQube- SAST') {
+/*       stage('SonarQube- SAST') {
         steps {
           withSonarQubeEnv('SonarQube') {
             sh '''
@@ -51,12 +53,12 @@ pipeline {
             }
           }
         }
-      }
+      } */
 
-      stage('Vulnerability Scan - Docker') {
+/*       stage('Vulnerability Scan - Docker') {
         steps {
           parallel (
-            //"Dependency Scan": {
+            //"Dependency Scan": { DEJAR COMENTADO
             //  sh "mvn dependency-check:check"
             //},
             "Trivy Scan": {
@@ -67,9 +69,9 @@ pipeline {
             }
           )
         }
-      }
+      } */
 
-      stage('Docker Build and Push') {
+/*       stage('Docker Build and Push') {
         steps {
           withDockerRegistry([credentialsId: "docker-hub", url:""]) {
           sh 'printenv'
@@ -77,10 +79,10 @@ pipeline {
           sh 'docker push f90mora/devsecopsdemo1:""$GIT_COMMIT""'
           }
         }
-      }
+      } */
 
 
-      stage('Vulnerability Scan- Kubernetes') {
+/*       stage('Vulnerability Scan- Kubernetes') {
         steps {
           parallel(
             "OPA Scan" : {
@@ -89,15 +91,15 @@ pipeline {
             "Kubesec Scan": {
               sh "bash kubesec-scan.sh"
             },
-            //"Trivy Scan": {
+            //"Trivy Scan": { DEJAR COMENTADO
              // sh "bash trivy-k8s-scan.sh"
             //}
           )
         }
-      }
+      } */
 
 
-      stage('k8s Deployment - DEV') {
+/*       stage('k8s Deployment - DEV') {
         steps {
           parallel(
             "Deployment" : {
@@ -112,9 +114,9 @@ pipeline {
             }
           )
         }
-      }
+      } */
 
-      stage('Integration Test - DEV') {
+/*       stage('Integration Test - DEV') {
         steps {
           script {
             try {
@@ -129,9 +131,10 @@ pipeline {
             }
           }
         }
-      }
+      } */
+      
 
-/*       stage('OWASP ZAP -DAST') {
+/*       stage('OWASP ZAP -DAST') { DEJAR COMENTADO
         steps {
           withKubeConfig([credentialsId: 'kubeconfig']) {
             sh 'bash zap.sh'
@@ -139,14 +142,24 @@ pipeline {
         }
       } */
 
+    stage('Testing Slack') {
+      steps {
+        sh 'exit 0'
+      }
+    }
+
+
     }
 
     post {
       always {
-         junit 'target/surefire-reports/*.xml'
-         jacoco execPattern: 'target/jacoco.exec'
-         dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+         //junit 'target/surefire-reports/*.xml'
+         //jacoco execPattern: 'target/jacoco.exec'
+         //dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
          /* publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true]) */
+
+         //sendNotification.groovy from shared library and provide current build result as parameter
+         sendNotification currentBuild.result
       }
     }
 }
