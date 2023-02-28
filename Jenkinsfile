@@ -150,6 +150,25 @@ pipeline {
         }
       }
 
+      stage('K8s CIS Benchmark') {
+        steps {
+          script {
+            parallel(
+              "Master": {
+                sh "bash cis-master.sh"
+              },
+              "Etcd": {
+                sh "bash cis-etcd.sh"
+              },
+              "Kubelet": {
+                sh "bash cis-kubelet.sh"
+              }
+            )
+          }
+        }
+      }
+
+
  /*    stage('Testing Slack') {
       steps {
         sh 'exit 1'
