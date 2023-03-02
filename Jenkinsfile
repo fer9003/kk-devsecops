@@ -170,7 +170,7 @@ pipeline {
 
       stage('K8s Deployment - PROD') {
         steps {
-          parallel {
+          parallel (
             "Deployment": {
               withKubeConfig([credentialsId: 'kubeconfig']) {
                 sh "sed -i 's#replace#${imageName}#g' k8s_PROD-deployment_service.yaml"
@@ -182,7 +182,7 @@ pipeline {
                 sh "bash k8s-PROD-deployment-rollout-status.sh"
               }
             }
-          }
+          )
         }
       }
 
